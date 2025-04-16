@@ -17,7 +17,10 @@ INSERT INTO employees (employee_id, name, department, salary) VALUES (9, 'Ivy', 
 INSERT INTO employees (employee_id, name, department, salary) VALUES (10, 'Jack', 'Marketing', 3500);
 INSERT INTO employees (employee_id, name, department, salary) VALUES (11, 'Kelly', 'Marketing', 4500);
 INSERT INTO employees (employee_id, name, department, salary) VALUES (12, 'Leo', 'Marketing', 5500);
-
+INSERT INTO employees (employee_id, name, department, salary) VALUES (13, 'Mary', 'HR', 4500);
+INSERT INTO employees (employee_id, name, department, salary) VALUES (14, 'Nadia', 'IT', 5000);
+INSERT INTO employees (employee_id, name, department, salary) VALUES (15, 'Ornella', 'Finance', 7500);
+INSERT INTO employees (employee_id, name, department, salary) VALUES (16, 'Patty', 'Marketing', 6000);
 
 
 --TASKS IN THE ASSIGNMENT
@@ -56,4 +59,35 @@ with ranked as (
     from employees
 )
 select * from ranked where rnk <= 3;
+
+
+
+--4
+-- We assumed employee_id correlates to the date the employee joined the company. The query returns the first 2 employees per department.
+WITH earliest_employees AS (
+    SELECT 
+        employee_id,
+        name,
+        department,
+        salary,
+        ROW_NUMBER() OVER (PARTITION BY department ORDER BY employee_id) AS row_num
+    FROM employees
+)
+SELECT * 
+FROM earliest_employees 
+WHERE row_num <= 2;
+
+
+
+--5
+-- MAX(salary) OVER (PARTITION BY department) gives department-level maximums.
+-- MAX(salary) OVER () gives the global maximum across all employees.
+SELECT
+    employee_id,
+    name,
+    department,
+    salary,
+    MAX(salary) OVER (PARTITION BY department) AS max_salary_in_department,
+    MAX(salary) OVER () AS overall_max_salary
+FROM employees;
 
